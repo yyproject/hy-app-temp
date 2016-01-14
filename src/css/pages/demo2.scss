@@ -1,0 +1,30 @@
+.g-list {
+	.hy-g {
+		margin-bottom: 1rem;
+	} 
+	.hy-u-sm-7 {
+		padding-left: 0;
+	}
+
+	.g-intro-img {
+		position: relative;
+		padding-top: 54.54%; //图片高度/图片宽度
+		overflow: hidden;
+		img {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+		}
+	}
+	.g-intro-desc {
+		line-height: 135%;
+	}
+	.g-intro-h2 {
+		font-size: 1.4rem;
+	}
+	.g-intro-title,.g-intro-crowd {
+		font-size: 1.2rem;
+		color: #999;
+	}
+}
