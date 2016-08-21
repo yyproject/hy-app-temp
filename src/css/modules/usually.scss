@@ -12,26 +12,31 @@
 
 // Layout
 // 网格
-@import "../base/_grid";
+@import "../base/__grid";
 // 等分网格
-@import "../base/_block-grid";
+@import "../base/__block-grid";
 
 
 
 // Elements
 // 图片
-@import "../base/_image";
+@import "../base/__image";
 // 表格
-@import "../base/_table";
+@import "../base/__table";
 // 表单
-@import "../base/_form";
+@import "../base/__form";
 //按钮
-@import "../base/_button";
+@import "../base/__button";
 
 // Common
 // 缩略图
-@import "../base/_thumbnail";
+@import "../base/__thumbnail";
 // 辅助类
-@import "../base/_utility";
+@import "../base/__utility";
 // 辅助类显示与隐藏
-@import "../base/_utility-show-hide";
+@import "../base/__utility-show-hide";
+
+
+//工具类
+@import "../tool/__function";
+@import "../tool/__mixins";

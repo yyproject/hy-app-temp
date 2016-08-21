@@ -1,12 +1,33 @@
-@charset "UTF-8";
+//工具类
+@import "../tool/__function";
+@import "../tool/__mixins";
 
-@import "../modules/usually.scss";
+.game-list {
+	padding: 0 pxToRem(5);
+	margin: 0;
+	.hy-thumbnail {
+		padding: pxToRem(5);
+		margin-bottom: 0;
+			border: none;
+			background: transparent;
+		a {
+			display: block;
+			position: relative;
+		}
+		img {
+			width: 100%;
+		}
+		.game-list-txt {
+			position: absolute;
+			bottom:0;
+			color: #fff;
+			@include font-dpr(14px);
+			padding-left: pxToRem(10);
 
-#a {
-	width: 300px;
-	height: 300px;
-	position: absolute;
-	left: 100px;
-	top: 100px;
-	background: #000;
+		}
+		.game-list-crowd {
+			@include font-dpr(12px);
+		}
+	}
 }
+

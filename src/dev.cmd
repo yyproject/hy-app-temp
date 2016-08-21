@@ -1,1 +1,0 @@
-fis release -f fis-dev.js -d dev -pD & pause

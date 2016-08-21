@@ -1,167 +1,200 @@
-//
-exports.getConfig = function(mode) {
-    return {
-        //项目过滤
-        project: {
-            exclude: [/node_modules\/|\.svn\/|\.git\//i, 'Gruntfile.js', 'package.json', 'docs/**', '**.cmd', '**.sh','**.md','components/**.json']
-        },
-        //fis插件配置
-        modules: {
-            //编译
-            parser: {
-                //.tmpl后缀的文件使用fis-parser-utc插件编译
-                tmpl: 'utc',
-                less: 'less',
-                sass: 'sass',
-                scss: 'sass'
+// 项目过滤
+fis.set('project.ignore', [
+    'docs/**',
+    '.git/**',
+    '.svn/**',  
+    'package.json', 
+    '**.cmd', 
+    '**.sh',
+    '**/*.md',
+    'components/**/*.json',
+    'fis-dev.js',
+    'fis-pub.js',
+    'fis-conf.js',
+]);
+
+
+// scss文件处理
+fis.match('*.{scss,sass}', {
+    //sass编译
+    parser: fis.plugin('node-sass'), //启用fis-parser-sass插件
+    //产出css后缀的名字
+    rExt: '.css',
+    //使用雪碧图
+    useSprite: true,
+    //标准化处理，加css前缀
+    preprocessor: fis.plugin('autoprefixer', {
+        // https://www.npmjs.com/package/fis3-preprocessor-autoprefixer
+        "browsers": ["Android >= 2.1", "iOS >= 4", "ie >= 8", "firefox >= 15"]
+    })
+});
+// 对于有_的css就不要产出了，比如_xx.css,这种当做是内联的 
+fis.match(/(__(.*)\.(css|less|scss|sass))/i, {
+    release : false
+});
+//对内联的scss进行编译
+//https://github.com/fex-team/fis3-demo/tree/master/use-xlang
+fis.match('*:scss', {
+    parser: fis.plugin('node-sass')
+})
+
+
+//解析模板  https://github.com/fouber/fis-parser-utc
+fis.match('**.tmpl', {
+    //utc编译
+    parser: fis.plugin('utc'), //启用fis-parser-utc插件
+    isJsLike: true, //只是内嵌，不用发布
+    isMod: false,
+    release : false
+},true);
+
+
+
+// widget源码目录下的资源被标注为组件
+fis.match('/widget/**', {
+    useSameNameRequire: true,
+    //isMod: true
+});
+fis.match('/components/**', {
+    useSameNameRequire: true,
+    //isMod: true
+});
+fis.match('/modules/**', {
+    //isMod: true,
+});
+
+//https://github.com/fex-team/fis-postprocessor-jswrapper
+fis.match('{/widget/**/*.js,/components/**/*.js,/modules/**/*.js}', {
+    postprocessor: fis.plugin('jswrapper', {
+        wrapAll : true,
+        template: 'hyfis.define("${id}", function(require, exports, module){\r\n${content}\r\n});'
+    })
+});
+
+fis.hook('commonjs');
+
+
+
+
+
+//https://github.com/fex-team/fis3-preprocessor-js-require-css
+fis.match('*.js', {
+    preprocessor: [
+        fis.plugin('js-require-file'),
+        fis.plugin('js-require-css',{
+            mode : 'inline'
+        })    
+    ]
+})
+
+
+
+
+//启用打包插件，必须匹配 ::package
+fis.match('::package', {
+    //css精灵合并  更多配置  https://github.com/fex-team/fis-spriter-csssprites
+    spriter: fis.plugin('csssprites', {
+        //图之间的边距
+        margin: 5,
+        //使用矩阵排列方式，默认为线性`linear`
+        layout: 'matrix'
+    }),
+    //可开启定制的打包插件  https://github.com/fex-team/fis3-packager-map
+    /*packager: fis.plugin('map', {
+        'pkg/all.js': [
+            'libs/*.js',
+            'widget/*.js'
+        ]
+    })*/
+    //分析并打包依赖的资源 更多配置  https://github.com/fex-team/fis3-postpackager-loader
+    postpackager: fis.plugin('loader', {
+        resourceType : 'mod',
+        useInlineMap: true,
+        allInOne : {
+            js: function (file) {
+                return "/pkg/js/" + file.filename + "_aio.js";
             },
-            //标准化处理阶段
-            postprocessor: {
-                js: 'jswrapper, require-async',
-                css: 'autoprefixer',
-                html: 'require-async'
-            },
-            //单文件编译过程中的代码检查插件 -l
-            lint: {
-                js: 'jshint'
-            },
-            //单文件编译过程中的最后阶段，对文件进行优化，默认值 -o
-            optimizer: {
-                js: 'uglify-js',
-                css: 'clean-css',
-                png: 'png-compressor'
-            },
-            postpackager: ['autoload', 'simple'],
-            //csssprite合并 ?__sprite
-            //spriter:"csssprites"
-        },
-        roadmap: {
-            ext: {
-                less: 'css',
-                sass: 'css',
-                scss: 'css'
-            },
-            path:[{
-                //前端模板
-                reg: '**.tmpl',
-                //当做类html文件处理，可以识别<img src="xxx"/>等资源定位标识
-                isJsLike:true,
-                release: false
-            },
-            {
-                //组件库
-                reg: 'components/**/*.js',
-                isMod: true
-            },
-            {
-                //一级同名组件，可以引用短路径，比如modules/jquery/juqery.js
-                //直接引用为var $ = require('jquery');
-                reg: /^\/(modules\/([^\/]+)\/\2\.(js))$/i, //是组件化的，会被jswrapper包装
-                isMod: true, //id为文件夹名
-                id: '$2'
-            },
-            {
-                //modules目录下的其他脚本文件
-                reg: /^\/(modules\/(.*)\.(js))$/i, //是组件化的，会被jswrapper包装
-                isMod: true, //id是去掉modules和.js后缀中间的部分
-                id: '$2'
-            },
-            {
-                //css文件
-                reg: /^\/css\/((.*)\.(css|less|scss|sass))$/i,
-                //使用雪碧图
-                useSprite: true
-            },
-            {
-                reg: 'map.json',
-                release: false
-            }]
-        },
-        //插件的配置信息
-        settings: {
-            lint: {
-                //http://www.cnblogs.com/code/articles/4103070.html
-                jshint: {
-                    //此选项允许您强制所有变量名以使用驼峰式或UPPER_CASE带下划线
-                    camelcase: true,
-                    //使用{}来明确代码块
-                    curly: true,
-                    //使用===和!==替代==和!=
-                    eqeqeq:true,
-                    //在for in循环中使用Object.prototype.hasOwnProperty()来过滤原型链中的属性
-                    forin: true,
-                    //禁止复写原生对象(如Array, Date)的原型
-                    freeze : true,
-                    //匿名函数调用必须
-                    immed: true,
-                    //变量定义前禁止使用
-                    latedef: true,
-                    //构造函数名首字母必须大写
-                    newcap: true,
-                    //禁止使用arguments.caller和arguments.callee
-                    noarg: true,
-                    //禁止出现空的代码块
-                    noempty: true,
-                    node: true,
-                    //代码最多可以嵌套几层
-                    maxdepth : 2,
-                    //函数可以接受的最大参数数量
-                    maxparams : 3,
-                    //中文报错
-                    i18n : 'zh-CN',
-                    ignored: ['lib/**', /jquery|backbone|underscore/i,'components/**']
-                }
-            },
-            optimizer: {
-                'uglify-js': {
-                    //不压缩变量名
-                    mangle: {
-                        except: 'exports, module, require, define'
-                    }
-                    //自动去除console.log等调试信息
-                    /*compress : {
-                        drop_console: true
-                    }*/
-                },
-                'png-compressor': {
-                    //pngquant会将所有 png24 的图片压缩为 png8，压缩率极高，但alpha通道信息会有损失。
-                    type: 'pngquant' //default is pngcrush
-                }
-            },
-            postprocessor : {
-                jswrapper: {
-                    template: 'dwfis.define("${id}", function(require, exports, module){\r\n${content}\r\n});'
-                },
-                autoprefixer: {
-                    // detail config (https://github.com/postcss/autoprefixer#browsers)
-                    // 这里copy了原来duya目录下的grunt配置，请根据项目需要自行修改
-                    browsers: ['> 1%', 'last 2 versions', 'ff 17', 'opera 12.1', 'ie 8'],
-                    cascade: true
-                }
-            },
-            spriter:{
-                csssprites:{
-                    //开启模板内联css处理,默认关闭
-                    //htmlUseSprite: true,
-                    //默认针对html原生<style></style>标签内的内容处理。
-                    //用户可以通过配置styleTag来扩展要识别的css片段
-                    //以下是默认<style></style>标签的匹配正则
-                    //styleReg: /(<style(?:(?=\s)[\s\S]*?["'\s\w\/\-]>|>))([\s\S]*?)(<\/style\s*>|$)/ig,
-                    //默认是3px
-                    //margin:5
-                }
-            },
-            postpackager: {
-                simple: {
-                    autoCombine: true,
-                    headTag : '<!--HEAD_END-->',
-                    bodyTag: '<!--BODY_END-->'
-                }
+            css: function (file) {
+                return "/pkg/css/" + file.filename + "_aio.css";
             }
         }
-        //可以开启这里设置不进行全部打包进去
-        /*pack : {
-            'pkg/aio_util.js' : ['components/huya-report/huya-report.js','components/jquery-cookie/jquery.cookie.js','modules/util/util.js','modules/login/login.js']
-        }*/
-    }
-};
+    })
+})
+
+
+
+//view 的文件发布到根目录下
+fis.match('views/(**)', {
+   release : '/$1',
+   useHash : false, 
+},true)
+
+
+//过滤掉被打包的资源。
+fis.match('**', {
+  deploy: [
+    //https://github.com/fex-team/fis3-deploy-skip-packed
+    fis.plugin('skip-packed',{
+        // 默认被打包了 js 和 css 以及被 css sprite 合并了的图片都会在这过滤掉，
+        // 但是如果这些文件满足下面的规则，则依然不过滤
+        /*ignore: [
+            '/img/b1.png'
+        ]*/
+    }),
+    fis.plugin('local-deliver')
+  ]
+})
+
+
+//发布配置
+fis.media('prod')
+    //发布的时候，不使用编译缓存,全部MD5
+    .match('**', { 
+        useCache: false,
+        useHash: true
+    })
+    // http://fis.baidu.com/fis3/docs/api/config-glob.html
+    .match('*.html:js', {
+        // 对内联的html的js进行压缩
+        optimizer: fis.plugin('uglify-js')
+    })
+    .match('*.html:css', {
+        // 对内联的html的css进行压缩 
+        optimizer: fis.plugin('clean-css')
+    })
+    .match('*:scss', {
+        // 对内联的html的scss进行压缩 
+        optimizer: fis.plugin('clean-css')
+    })
+    .match('::image', {
+        // 压缩图片
+        optimizer : fis.plugin('png-compressor',{
+            type : 'pngquant' //default is pngcrush
+        })
+    })
+    //压缩css    
+    .match('**.css', {
+        optimizer: fis.plugin('clean-css')
+    })
+    //压缩js
+    .match('**.js', {
+        optimizer: fis.plugin('uglify-js', {
+            mangle: {
+                expect: ['exports, module, require, define'] //不想被压的
+            },
+            //自动去除console.log等调试信息
+            compress : {
+                //drop_console: true
+            }
+        })
+    })
+
+
+fis.media('prod')
+    //发布的时候，不使用编译缓存,全部MD5
+    .match('**', { 
+        domain : 'http://xjl.huya.com/fis3/dev',
+        deploy: fis.plugin('local-deliver', {
+            to: 'F:/xjltest/fis3/dev'
+        })
+    })
