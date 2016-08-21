@@ -28,37 +28,37 @@ _请注意,该模板将生成文件在当前目录中,所以一定要先切换�
 
 ## 模板说明
 
-该模板使用的是fis的编译工具，依赖于以下插件
-
-* npm install -g fis@1.9.2
-* npm install -g fis-parser-utc@0.0.2   //编译underscore模板
-* npm install -g fis-postpackager-autoload@1.2.7   //用于自动加载模块化资源的FIS插件
-* npm install -g fis-postpackager-simple@0.0.23  //用于自动打包页面零散资源和应用打包资源的FIS插件
-* npm install -g fis-postprocessor-require-async@0.0.9   //require.async执行的组件，并把它们记录下来
-* npm install -g fis-parser-sass@0.3.9   //编译sass
-* npm install -g fis-postprocessor-autoprefixer@0.0.3  //自动补充css3的样式
-
-*fis-parser-sass依赖于 node的版本为0.10.x*
+该模板使用的是fis3的编译工具，依赖于以下插件
 
 
 
+- npm install -g fis3@3.4.22
+- npm install -g fis-parser-utc@0.0.2 //编译underscore模板
+- npm install -g fis-parser-node-sass@0.2.1 //编译underscore模板
+- npm install -g fis-postprocessor-jswrapper@0.0.14 //模块化打包
+- npm install -g fis3-preprocessor-js-require-file@0.1.0 //分析模块化的require依赖文件
+- npm install -g fis3-preprocessor-js-require-css@0.1.0 //分析模块化的require依赖css
+- npm install -g fis3-postpackager-loader@2.1.3 //资源打包
+- npm install -g fis3-deploy-skip-packed@0.0.5 //过滤掉被打包的资源。
 
-#开发事项
+
+
+#HTML/CSS 编写注意事项
 
 ----------
 
 > 本脚手架是amazeui的阉割版，详细文档请查看Issues。
 
 
+## 基本原则
+
+- 以 hy 为命名空间
+- 关注分离，将 HTML、CSS 解耦；模块化编码。
 
 
-以 hy 为命名空间
-关注分离，将 HTML、CSS 解耦；模块化编码。
+## 模块化编写实践
 
-
-### 模块化编写实践
-
-- 语义化的模块名，通过模块名应该能一眼就看出模块的是干什么的。
+- **语义化的模块名**，通过模块名应该能一眼就看出模块的是干什么的。
 
 - 模块内部的类名继承自父级。
 
@@ -69,11 +69,18 @@ _请注意,该模板将生成文件在当前目录中,所以一定要先切换�
 		</div>
 
 
+上面的代码中，模块的名为 **box**，模块最外层使用 **{命名空间}-{模块名}** 的方式命名 Class。模块子元素以在此基础上进行命名。如果不继承父级的类名，很容易造成命名冲突。
+
+
+
+## 命名注意事项
+
+
 ###模块状态： {命名空间}-{模块名}-{状态描述}
 
 常用状态有：hover, current, selected, disabled, focus, blur, checked, success, error 等
 
-hy-tab-hover
+	hy-tab-hover
 
 
 ###子模块： {命名空间}-{模块名}-{子模块名}
@@ -92,21 +99,17 @@ hy-tab-hover
 统一命名风格（使用相同名词命名不同组件的子元素）：如 hy-tab-hd, hy-modal-hd，便于理解。    
 
 
-虎牙构建工具会使用 Autoprefixer 自动添加浏览器厂商前缀，编写 CSS 时不要添加浏览器前缀，直接使用标准的 CSS 编写（也不要使用 mixins.scss 里的前缀 mixin）。                              
+虎牙构建工具会使用 Autoprefixer 自动添加浏览器厂商前缀，编写 CSS 时不要添加浏览器前缀，直接使用标准的 CSS 编写
 
 
 
 
-###JavaScript
+##JavaScript
 
 ###默认绑定事件：
 
 事件名（内置事件，非自定义事件）采用 {事件名}.{组件名}.{命名空间}，如 $(document).on('click.modal.hyui',...。
 
-取消所有默认绑定事件： $(document).off('.hyui',...
-取消特定组件的默认绑定事件： $(document).off('.modal.hyui',...
 
-
-
-
-
+- 取消所有默认绑定事件： $(document).off('.hyui',...
+- 取消特定组件的默认绑定事件： $(document).off('.modal.hyui',...
