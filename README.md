@@ -40,7 +40,7 @@ _请注意,该模板将生成文件在当前目录中,所以一定要先切换�
 - npm install -g fis3-preprocessor-js-require-css@0.1.0 //分析模块化的require依赖css
 - npm install -g fis3-postpackager-loader@2.1.3 //资源打包
 - npm install -g fis3-deploy-skip-packed@0.0.5 //过滤掉被打包的资源。
-
+- npm install -g fis3-preprocessor-autoprefixer@0.1.0 //css前缀
 
 
 #HTML/CSS 编写注意事项
