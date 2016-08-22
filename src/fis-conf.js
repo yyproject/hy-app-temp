@@ -188,7 +188,6 @@ fis.media('prod')
 
 
 fis.media('prod')
-    //发布的时候，不使用编译缓存,全部MD5
     .match('**', { 
         domain : 'http://xjl.huya.com/fis3/dev',
         deploy: fis.plugin('local-deliver', {
