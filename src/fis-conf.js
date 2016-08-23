@@ -64,7 +64,7 @@ fis.match('/modules/**', {
 });
 
 //https://github.com/fex-team/fis-postprocessor-jswrapper
-fis.match('{/widget/**/*.js,/components/**/*.js,/modules/**/*.js}', {
+fis.match('{/widget/**.js,/components/**.js,/modules/**.js}', {
     postprocessor: fis.plugin('jswrapper', {
         wrapAll : true,
         template: 'hyfis.define("${id}", function(require, exports, module){\r\n${content}\r\n});'
@@ -72,9 +72,6 @@ fis.match('{/widget/**/*.js,/components/**/*.js,/modules/**/*.js}', {
 });
 
 fis.hook('commonjs');
-
-
-
 
 
 //https://github.com/fex-team/fis3-preprocessor-js-require-css
@@ -191,7 +188,6 @@ fis.media('prod')
 
 
 fis.media('prod')
-    //发布的时候，不使用编译缓存,全部MD5
     .match('**', { 
         domain : 'http://xjl.huya.com/fis3/dev',
         deploy: fis.plugin('local-deliver', {
