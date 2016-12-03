@@ -34,7 +34,7 @@ _请注意,该模板将生成文件在当前目录中,所以一定要先切换�
 
 - npm install -g fis3@3.4.22
 - npm install -g fis-parser-utc@0.0.2 //编译underscore模板
-- npm install -g fis-parser-node-sass@0.2.1 //编译underscore模板
+- npm install -g fis-parser-node-sass@0.2.1 //编译sass模板
 - npm install -g fis-postprocessor-jswrapper@0.0.14 //模块化打包
 - npm install -g fis3-preprocessor-js-require-file@0.1.0 //分析模块化的require依赖文件
 - npm install -g fis3-preprocessor-js-require-css@0.1.0 //分析模块化的require依赖css
@@ -42,6 +42,7 @@ _请注意,该模板将生成文件在当前目录中,所以一定要先切换�
 - npm install -g fis3-deploy-skip-packed@0.0.5 //过滤掉被打包的资源。
 - npm install -g fis3-preprocessor-autoprefixer@0.1.0 //css前缀
 - npm install -g postcss  //css前缀--用到
+- npm install -g fis3-hook-commonjs //模块化
 
 
 

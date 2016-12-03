@@ -53,23 +53,23 @@ fis.match('**.tmpl', {
 // widget源码目录下的资源被标注为组件
 fis.match('/widget/**', {
     useSameNameRequire: true,
-    //isMod: true
+    isMod: true
 });
 fis.match('/components/**', {
     useSameNameRequire: true,
-    //isMod: true
+    isMod: true
 });
 fis.match('/modules/**', {
-    //isMod: true,
+    isMod: true,
 });
 
 //https://github.com/fex-team/fis-postprocessor-jswrapper
-fis.match('{/widget/**.js,/components/**.js,/modules/**.js}', {
+/*fis.match('{/widget/**.js,/components/**.js,/modules/**.js}', {
     postprocessor: fis.plugin('jswrapper', {
         wrapAll : true,
         template: 'hyfis.define("${id}", function(require, exports, module){\r\n${content}\r\n});'
     })
-});
+});*/
 
 fis.hook('commonjs');
 
