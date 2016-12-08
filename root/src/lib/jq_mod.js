@@ -9484,26 +9484,17 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
  * update: 2016/01/27
  * https://github.com/fex-team/mod
  */
-//var require;
+var require;
 
 /* eslint-disable no-unused-vars */
-//var define;
+var define;
 
 (function (global) {
 
     // 避免重复加载而导致已定义模块丢失
-    /*if (require) {
+    if (require) {
         return;
-    }*/
-
-    var hyfis = global.hyfis;
-    if (!hyfis) {
-        hyfis = self.hyfis = {};
     }
-    if (hyfis.define) return;
-
-    var require, define;
-
 
     var head = document.getElementsByTagName('head')[0];
     var loadingMap = {};
@@ -9771,8 +9762,5 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     };
 
     require.timeout = 5000;
-
-    global.require = require;
-    hyfis.define = define;
 
 })(this);
