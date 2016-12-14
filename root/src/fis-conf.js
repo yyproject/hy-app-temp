@@ -98,11 +98,11 @@ fis.match('::package', {
     }),
     //可开启定制的打包插件  https://github.com/fex-team/fis3-packager-map
     /*packager: fis.plugin('map', {
-        'pkg/all.js': [
-            'libs/*.js',
-            'widget/*.js'
+        'pkg/index.js': [
+            'modules/a.js',
+            'modules/index.js'
         ]
-    })*/
+    }),*/
     //分析并打包依赖的资源 更多配置  https://github.com/fex-team/fis3-postpackager-loader
     postpackager: fis.plugin('loader', {
         resourceType : 'mod',

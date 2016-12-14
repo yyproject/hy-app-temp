@@ -25,7 +25,6 @@
 	<link rel="stylesheet" href="../css/pages/pages-module.scss"><!--ignore-->
 	<!--STYLE_PLACEHOLDER-->
 	<link rel="stylesheet" href="../css/pages/index.scss">
-	<script type="text/javascript" src="../lib/flexible.js?__inline"></script><!--ignore-->
 </head>
 <body>
 	<header>
@@ -51,12 +50,12 @@
 	<div id="a1"></div><div id="a2"></div>
 
 
-	<script type="text/javascript" src="../lib/jq_mod.js"></script><!--ignore-->
-	<!--SCRIPT_PLACEHOLDER-->
+	<script type="text/javascript" src="../lib/base.js"></script><!--ignore-->
 	<!--RESOURCEMAP_PLACEHOLDER-->
+	<!--SCRIPT_PLACEHOLDER-->
 	<!--DEPENDENCIES_INJECT_PLACEHOLDER-->
 	<script type="text/javascript">
-		//require('modules/index')
+		require.async('modules/index')
 	</script>
 </body>
 </html>
