@@ -76,47 +76,7 @@ var define;
         head.appendChild(docFrag);
     };
 
-    function loadByXHR(id, url, callback) {
-        var store = storage
-            , content
-            , item;
-
-        function _load(url, cb) {
-            var xhr = new window.XMLHttpRequest;
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 ) {
-                    if (xhr.status==200) {
-                        content = xhr.responseText
-                        var oldUrl = store.get(id);
-
-                        if (oldUrl) {
-                            store.remove(oldUrl);
-                        }
-                        
-                        store.set(url, content,24*3600);
-                        store.set(id, url,24*3600);
-
-                        cb(content);
-                    } else {
-                        throw new Error('A unkown error occurred.');
-                    }
-                }
-            };
-            xhr.open('get', url);
-            xhr.send(null);
-        }
-
-        if ((content = store.get(url))) {
-            
-            if (!store.get(id)) {
-                store.set(id, url,24*3600);
-            }
-
-            callback(content);
-        } else {
-            _load(url, callback);
-        }
-    }
+    
 
     var loadScripts = function(ids, callback, onerror,store){
         var queues = [];
@@ -146,7 +106,7 @@ var define;
         }
 
 
-        if (!window.XMLHttpRequest || !store) {
+        if (!window.XMLHttpRequest || !store || !window.storage) {
         	
             createScripts(queues, onerror);
         } else {
@@ -158,7 +118,7 @@ var define;
 		            var url = queues[i].url;
 
 		            scriptsMap[url] = true;
-                	loadByXHR(id, url, function(content) {
+                	storage.loadByXHR(id, url, function(content) {
 	                    script = document.createElement('script');
 	                    script.type = 'text/javascript';
 	                    script.innerHTML = content;

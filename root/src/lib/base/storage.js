@@ -41,7 +41,7 @@ window.storage = (function(){
                     localStorage.setItem(name,JSON.stringify(v));
                 } catch (e) {
                     //localstorage写满时,全清掉
-                    if (e.name == 'QuotaExceededError') {
+                    if (e.name == 'QuotaExceededError' || e.name == 'NS_ERROR_DOM_QUOTA_REACHED') {
                         localStorage.clear();
                     }
                     //再重新写入一次
@@ -89,9 +89,57 @@ window.storage = (function(){
     var adapter = _localStorage();
 
 
+
+
+    function loadByXHR(id, url, callback) {
+        var store = storage
+            , content
+            , item;
+
+        var timeLong = 24*3600;     
+
+        function _load(url, cb) {
+            var xhr = new window.XMLHttpRequest;
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 ) {
+                    if (xhr.status==200) {
+                        content = xhr.responseText
+                        var oldUrl = store.get(id);
+
+                        if (oldUrl) {
+                            store.remove(oldUrl);
+                        }
+                        
+                        store.set(url, content, timeLong);
+                        store.set(id, url, timeLong);
+
+                        cb(content);
+                    } else {
+                        throw new Error('A unkown error occurred.');
+                    }
+                }
+            };
+            xhr.open('get', url);
+            xhr.send(null);
+        }
+
+        if ((content = store.get(url))) {
+            
+            if (!store.get(id)) {
+                store.set(id, url, timeLong);
+            }
+
+            callback(content);
+        } else {
+            _load(url, callback);
+        }
+    }
+
+
     return {
         get:adapter.get,
         set:adapter.set,
+        loadByXHR : loadByXHR,
         remove:adapter.remove,
         cookie:cookie
     }
