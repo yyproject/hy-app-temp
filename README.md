@@ -1,6 +1,6 @@
 # hy-app-temp
 
-> 通过 [grunt-init][], 创建一个虎牙移动端模板.
+> 通过 [grunt-init][], 创建一个移动端模板.
 
 [grunt-init]: http://gruntjs.com/project-scaffolding
 
@@ -103,7 +103,7 @@ _请注意,该模板将生成文件在当前目录中,所以一定要先切换�
 统一命名风格（使用相同名词命名不同组件的子元素）：如 hy-tab-hd, hy-modal-hd，便于理解。    
 
 
-虎牙构建工具会使用 Autoprefixer 自动添加浏览器厂商前缀，编写 CSS 时不要添加浏览器前缀，直接使用标准的 CSS 编写
+构建工具会使用 Autoprefixer 自动添加浏览器厂商前缀，编写 CSS 时不要添加浏览器前缀，直接使用标准的 CSS 编写
 
 
 
