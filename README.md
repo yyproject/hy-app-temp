@@ -43,6 +43,7 @@ _请注意,该模板将生成文件在当前目录中,所以一定要先切换�
 - npm install -g fis3-preprocessor-autoprefixer@0.1.0 //css前缀
 - npm install -g postcss  //css前缀--用到
 - npm install -g fis3-hook-commonjs //模块化
+- npm install -g fis-parser-es6-babel   //编译e6的代码
 
 
 
